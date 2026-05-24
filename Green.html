@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>กองทุนเงินค่าสีเขียว — FLIPCYBER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --g1:#00ff87;--g2:#00c96e;--g3:#00a855;--g4:#007a3d;
+  --dark:#050f0a;--dark2:#081a10;--dark3:#0d2418;--dark4:#12301f;
+  --card:#0a1f12;--card2:#0e2818;--card3:#132e1c;
+  --border:rgba(0,255,135,0.12);--border2:rgba(0,255,135,0.25);--border3:rgba(0,255,135,0.40);
+  --text:#e8fdf0;--text2:#9dd4b0;--text3:#5a9470;
+  --gold:#ffd700;--red:#ff4d6d;--red2:rgba(255,77,109,0.12);--rdb:rgba(255,77,109,0.28);
+  --blue:#00b4ff;--warn:#ff9800;
+}
+body{font-family:'Kanit',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* PARTICLES */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+.particle{position:absolute;border-radius:50%;animation:float linear infinite;opacity:0}
+@keyframes float{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:0.3}100%{transform:translateY(-20vh) scale(1.5);opacity:0}}
+
+/* GRID BG */
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,135,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,135,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%,rgba(0,200,110,0.08) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(0,168,85,0.06) 0%,transparent 50%);pointer-events:none;z-index:0}
+
+/* ── SCREEN SYSTEM ── */
+.screen{display:none;position:relative;z-index:1}
+.screen.active{display:block}
+
+/* ═══════════════════════════════
+   LOGIN SCREEN
+═══════════════════════════════ */
+#loginScreen{min-height:100vh;display:none;align-items:center;justify-content:center;flex-direction:column;padding:40px 20px}
+#loginScreen.active{display:flex}
+
+.login-wrap{width:100%;max-width:400px}
+.login-brand{text-align:center;margin-bottom:32px}
+.login-brand-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,255,135,0.08);border:1px solid var(--border2);border-radius:100px;padding:6px 16px;font-size:11px;color:var(--g2);margin-bottom:16px;letter-spacing:2px;text-transform:uppercase}
+.login-brand-badge .dot{width:6px;height:6px;background:var(--g1);border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.login-brand h1{font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--g1),var(--g2),#00ffcc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.login-brand p{font-size:13px;color:var(--text3);font-weight:300;letter-spacing:1px}
+
+.login-box{background:linear-gradient(135deg,var(--card),var(--card3));border:1px solid var(--border2);border-radius:24px;padding:32px;position:relative;overflow:hidden}
+.login-box::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,255,135,0.1),transparent 70%);pointer-events:none}
+
+.role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
+.role-tab{padding:11px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text3);font-family:'Kanit',sans-serif;font-size:14px;cursor:pointer;transition:all .25s;text-align:center;font-weight:500}
+.role-tab.active{background:rgba(0,255,135,0.10);border-color:var(--border3);color:var(--g1);font-weight:700}
+.role-tab:hover:not(.active){border-color:var(--border2);color:var(--text2)}
+
+.login-field{margin-bottom:16px}
+.login-field label{display:block;font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.login-field input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:13px 16px;font-family:'Kanit',sans-serif;font-size:15px;color:var(--text);outline:none;transition:all .2s}
+.login-field input:focus{border-color:var(--g3);box-shadow:0 0 0 3px rgba(0,168,85,0.15)}
+.login-field input::placeholder{color:var(--text3)}
+
+.login-hint{font-size:11px;color:var(--text3);margin-top:16px;text-align:center;line-height:1.8;background:rgba(0,255,135,0.04);border:1px solid var(--border);border-radius:10px;padding:10px 14px}
+.login-hint strong{color:var(--g2)}
+
+.btn-login{width:100%;padding:15px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--g4),var(--g1));color:#fff;font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px;transition:all .25s;letter-spacing:.5px;box-shadow:0 4px 20px rgba(0,168,85,0.35)}
+.btn-login:hover{box-shadow:0 6px 30px rgba(0,168,85,0.55);transform:translateY(-1px)}
+.btn-login:active{transform:scale(.97)}
+.login-err{font-size:13px;color:var(--red);text-align:center;margin-top:10px;min-height:18px}
+
+/* ═══════════════════════════════
+   APP SCREEN
+═══════════════════════════════ */
+#appScreen{padding-bottom:60px}
+
+/* TOPBAR */
+.topbar{background:rgba(10,31,18,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-logo{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--g4),var(--g1));display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 14px rgba(0,255,135,0.25)}
+.topbar-title{font-size:15px;font-weight:700;color:var(--g1)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.user-badge{display:flex;align-items:center;gap:7px;background:rgba(0,255,135,0.07);border:1px solid var(--border2);border-radius:100px;padding:5px 14px;font-size:13px;color:var(--g2)}
+.role-pill{font-size:10px;background:rgba(0,255,135,0.15);color:var(--g1);padding:2px 8px;border-radius:100px;font-weight:700;letter-spacing:.5px}
+.btn-logout{background:var(--red2);border:1px solid var(--rdb);color:var(--red);font-family:'Kanit',sans-serif;font-size:13px;padding:5px 14px;border-radius:100px;cursor:pointer;transition:all .2s}
+.btn-logout:hover{background:rgba(255,77,109,0.22)}
+
+/* NAV TABS */
+.nav-tabs{display:flex;gap:4px;padding:14px 20px 0;border-bottom:1px solid var(--border);overflow-x:auto;background:rgba(5,15,10,0.6);backdrop-filter:blur(8px)}
+.nav-tab{padding:10px 18px;border-radius:10px 10px 0 0;font-family:'Kanit',sans-serif;font-size:14px;color:var(--text3);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;font-weight:500}
+.nav-tab.active{color:var(--g1);border-bottom-color:var(--g1);background:rgba(0,255,135,0.05)}
+.nav-tab:hover:not(.active){color:var(--text2)}
+
+.tab-content{display:none;padding:20px}
+.tab-content.active{display:block}
+.inner{max-width:900px;margin:0 auto}
+
+/* VIEWER BANNER */
+.locked-banner{background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);border-radius:12px;padding:10px 16px;font-size:13px;color:var(--warn);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+/* ── BALANCE HERO ── */
+.balance-hero{background:linear-gradient(135deg,var(--card) 0%,var(--card3) 100%);border:1px solid var(--border2);border-radius:24px;padding:28px 30px;margin-bottom:16px;position:relative;overflow:hidden}
+.balance-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(0,255,135,0.14),transparent 70%);pointer-events:none}
+.balance-hero::after{content:'💚';position:absolute;right:16px;bottom:-10px;font-size:100px;opacity:.05;pointer-events:none}
+.bal-label{font-size:11px;color:var(--text3);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px}
+.bal-amount{font-size:clamp(36px,7vw,68px);font-weight:700;color:var(--g1);line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.bal-unit{font-size:16px;color:var(--text2);font-weight:300;margin-bottom:22px}
+.bal-bar-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:6px}
+.bal-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden;margin-bottom:16px}
+.bal-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--g4),var(--g1));transition:width 1.5s cubic-bezier(.4,0,.2,1);position:relative}
+.bal-bar-fill::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:10px;height:10px;background:var(--g1);border-radius:50%;box-shadow:0 0 10px var(--g1)}
+.bal-footer{display:flex;gap:16px;flex-wrap:wrap}
+.bal-meta{font-size:12px;color:var(--text3)}
+.bal-meta strong{color:var(--text2)}
+
+/* ── GOAL CARD ── */
+.goal-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px 20px;margin-bottom:14px;position:relative;overflow:hidden}
+.goal-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(255,215,0,0.06),transparent 70%);pointer-events:none}
+.goal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.goal-hdr-title{font-size:14px;font-weight:600;color:var(--gold)}
+.goal-edit-btn{background:rgba(255,215,0,0.10);border:1px solid rgba(255,215,0,0.25);color:var(--gold);font-family:'Kanit',sans-serif;font-size:12px;padding:4px 12px;border-radius:100px;cursor:pointer;transition:all .2s}
+.goal-edit-btn:hover{background:rgba(255,215,0,0.2)}
+.goal-numbers{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+.goal-current{font-size:26px;font-weight:700;color:var(--g1);font-variant-numeric:tabular-nums}
+.goal-target{font-size:14px;color:var(--text3)}
+.goal-bar{height:8px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden;margin-bottom:6px}
+.goal-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,#b8860b,var(--gold),#ffeb3b);transition:width 1.5s cubic-bezier(.4,0,.2,1)}
+.goal-pct{font-size:12px;color:var(--text3)}
+.goal-pct strong{color:var(--gold)}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.stat-c{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 16px;transition:all .25s;cursor:default;position:relative;overflow:hidden}
+.stat-c::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent,var(--g2)),transparent);opacity:0;transition:opacity .3s}
+.stat-c:hover{border-color:var(--border2);transform:translateY(-2px)}
+.stat-c:hover::before{opacity:1}
+.stat-c.in{--accent:#00ff87}.stat-c.out{--accent:#ff4d6d}.stat-c.txn{--accent:#00b4ff}.stat-c.today{--accent:#ffd700}
+.stat-c .lbl{font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.stat-c .val{font-size:clamp(16px,3vw,22px);font-weight:700;font-variant-numeric:tabular-nums}
+.val.green{color:var(--g1)}.val.red{color:var(--red)}.val.blue{color:var(--blue)}.val.gold{color:var(--gold)}
+
+/* ── ACTIONS ── */
+.act-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+.btn-act{border:none;border-radius:16px;padding:16px;font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s;position:relative;overflow:hidden;letter-spacing:.5px}
+.btn-act:active{transform:scale(.96)}
+.btn-add-act{background:linear-gradient(135deg,#00703a,#00a855);color:#fff;box-shadow:0 4px 20px rgba(0,168,85,0.3)}
+.btn-add-act:hover{box-shadow:0 6px 30px rgba(0,168,85,0.5);transform:translateY(-1px)}
+.btn-ded-act{background:linear-gradient(135deg,#7a1525,#c0273f);color:#fff;box-shadow:0 4px 20px rgba(192,39,63,0.3)}
+.btn-ded-act:hover{box-shadow:0 6px 30px rgba(192,39,63,0.5);transform:translateY(-1px)}
+.btn-sm{width:100%;padding:12px;border-radius:12px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:'Kanit',sans-serif;font-size:14px;cursor:pointer;margin-bottom:8px;transition:all .2s}
+.btn-sm:hover{background:var(--card2);color:var(--text)}
+.btn-sm.danger{border-color:var(--rdb);color:var(--red)}
+.btn-sm.danger:hover{background:var(--red2)}
+
+/* RIPPLE */
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.15);transform:scale(0);animation:rippleAnim .6s linear;pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+/* ── SECTION CARD ── */
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:16px}
+.section-hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.section-hdr-title{font-size:15px;font-weight:600;color:var(--g2)}
+.badge-count{font-size:11px;background:rgba(0,255,135,0.10);border:1px solid var(--border2);color:var(--g2);padding:3px 10px;border-radius:100px}
+
+/* ── HISTORY ── */
+.search-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.search-input{flex:1;min-width:160px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'Kanit',sans-serif;font-size:14px;color:var(--text);outline:none;transition:all .2s}
+.search-input:focus{border-color:var(--g3);box-shadow:0 0 0 3px rgba(0,168,85,0.12)}
+.search-input::placeholder{color:var(--text3)}
+.filter-sel{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-family:'Kanit',sans-serif;font-size:14px;color:var(--text);outline:none;cursor:pointer;-webkit-appearance:none}
+.history-wrap{max-height:460px;overflow-y:auto}
+.history-wrap::-webkit-scrollbar{width:3px}
+.history-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.h-item{padding:14px 20px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;transition:background .15s;animation:hIn .35s ease both}
+@keyframes hIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+.h-item:hover{background:var(--card2)}
+.h-item:last-child{border-bottom:none}
+.h-dot{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.h-dot.in{background:rgba(0,255,135,0.12);border:1px solid rgba(0,255,135,0.3)}
+.h-dot.out{background:rgba(255,77,109,0.12);border:1px solid rgba(255,77,109,0.3)}
+.h-dot.rst{background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.3)}
+.h-info{min-width:0}
+.h-name{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.h-meta{font-size:12px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.h-amt{text-align:right;flex-shrink:0}
+.h-val{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.h-val.in{color:var(--g1)}.h-val.out{color:var(--red)}
+.h-time{font-size:11px;color:var(--text3);margin-top:2px}
+.empty-msg{text-align:center;padding:48px;color:var(--text3);font-size:14px}
+.empty-msg-icon{font-size:36px;margin-bottom:10px;opacity:.4}
+
+/* ── CHART ── */
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text3);margin-bottom:12px}
+.chart-legend span{display:flex;align-items:center;gap:5px}
+.chart-legend .dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* ── EXPORT ── */
+.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.export-card{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:22px;text-align:center;transition:all .25s;cursor:pointer;position:relative;overflow:hidden}
+.export-card::before{content:'';position:absolute;inset:0;background:rgba(0,255,135,0.04);opacity:0;transition:opacity .2s}
+.export-card:hover{border-color:var(--border3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.export-card:hover::before{opacity:1}
+.export-icon{font-size:32px;margin-bottom:10px}
+.export-title{font-size:15px;font-weight:600;margin-bottom:4px}
+.export-desc{font-size:12px;color:var(--text3)}
+
+/* ── MODAL ── */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.ov.show{display:flex}
+.modal{background:var(--dark3);border:1px solid var(--border2);border-radius:24px;width:100%;max-width:460px;padding:28px;position:relative;animation:modIn .35s cubic-bezier(.34,1.56,.64,1);max-height:90vh;overflow-y:auto}
+@keyframes modIn{from{opacity:0;transform:scale(.94) translateY(12px)}to{opacity:1;transform:none}}
+.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.06);border:none;color:var(--text2);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:monospace}
+.modal-close:hover{background:rgba(255,255,255,0.12);color:var(--text)}
+.modal-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--text3);margin-bottom:20px}
+.f-grp{margin-bottom:16px}
+.f-grp label{display:block;font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.f-grp input,.f-grp textarea,.f-grp select{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-family:'Kanit',sans-serif;font-size:14px;color:var(--text);outline:none;transition:all .2s;-webkit-appearance:none}
+.f-grp input:focus,.f-grp textarea:focus{border-color:var(--g3);box-shadow:0 0 0 3px rgba(0,168,85,0.12)}
+.f-grp input::placeholder{color:var(--text3)}
+.f-grp textarea{resize:none;height:72px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f-amt-wrap{position:relative}
+.f-amt-pfx{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.f-amt-wrap input{padding-left:32px}
+.btn-submit{width:100%;padding:15px;border-radius:12px;border:none;font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:6px;transition:all .25s;letter-spacing:.5px}
+.btn-submit:active{transform:scale(.97)}
+.btn-submit.add{background:linear-gradient(135deg,#00703a,#00c96e);color:#fff;box-shadow:0 4px 20px rgba(0,200,110,0.35)}
+.btn-submit.add:hover{box-shadow:0 6px 30px rgba(0,200,110,0.55)}
+.btn-submit.ded{background:linear-gradient(135deg,#7a1525,#d03050);color:#fff;box-shadow:0 4px 20px rgba(220,50,80,0.35)}
+.btn-submit.ded:hover{box-shadow:0 6px 30px rgba(220,50,80,0.55)}
+
+/* TOAST */
+.toast-area{position:fixed;bottom:24px;right:24px;z-index:300;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.toast{background:var(--dark3);border:1px solid var(--border2);border-radius:14px;padding:12px 18px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px;animation:tIn .35s cubic-bezier(.34,1.56,.64,1);min-width:230px;box-shadow:0 8px 30px rgba(0,0,0,0.5)}
+@keyframes tIn{from{opacity:0;transform:translateX(40px) scale(.9)}to{opacity:1;transform:none}}
+.toast.fade{animation:tOut .3s ease forwards}
+@keyframes tOut{to{opacity:0;transform:translateX(40px)}}
+
+/* BRANDING */
+.branding{text-align:center;padding:24px 0 8px;font-size:12px;color:var(--text3);letter-spacing:2px}
+.branding strong{color:var(--g3)}
+
+@media(max-width:500px){
+  .act-grid{grid-template-columns:1fr}
+  .export-grid{grid-template-columns:1fr}
+  .f-row{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .topbar-title{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<!-- ═══════════════════════
+     LOGIN SCREEN
+════════════════════════ -->
+<div id="loginScreen" class="screen active">
+  <div class="login-wrap">
+    <div class="login-brand">
+      <div class="login-brand-badge"><span class="dot"></span> FLIPCYBER FUND SYSTEM</div>
+      <h1>กองทุนค่าสีเขียว</h1>
+      <p>ระบบจัดการกีฬาสี v3.0</p>
+    </div>
+    <div class="login-box">
+      <div class="role-tabs">
+        <button class="role-tab active" onclick="setRole('admin')" id="tabAdmin">👑 Admin</button>
+        <button class="role-tab" onclick="setRole('viewer')" id="tabViewer">👁️ Viewer</button>
+      </div>
+      <div class="login-field">
+        <label>Username</label>
+        <input type="text" id="loginUser" placeholder="กรอก username" autocomplete="off">
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="กรอก password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="login-hint" id="loginHint">
+        Admin: <strong>admin</strong> / <strong>1234</strong> &nbsp;·&nbsp; Viewer: <strong>viewer</strong> / <strong>1234</strong>
+      </div>
+      <button class="btn-login" onclick="doLogin()">🔓 เข้าสู่ระบบ</button>
+      <div class="login-err" id="loginErr"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════
+     APP SCREEN
+════════════════════════ -->
+<div id="appScreen" class="screen">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">💚</div>
+      <span class="topbar-title">กองทุนค่าสีเขียว</span>
+    </div>
+    <div class="topbar-right">
+      <div class="user-badge">
+        <span id="userLabel">-</span>
+        <span class="role-pill" id="rolePill">-</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">ออก</button>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('dash',this)">📊 Dashboard</button>
+    <button class="nav-tab" onclick="showTab('history',this)">📋 ประวัติ</button>
+    <button class="nav-tab" onclick="showTab('chart',this)">📈 กราฟ</button>
+    <button class="nav-tab" onclick="showTab('export',this)">📤 Export</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="tab-content active" id="tab-dash">
+    <div class="inner">
+      <div id="viewerBanner" class="locked-banner" style="display:none">⚠️ คุณเข้าสู่ระบบในฐานะ Viewer — ดูข้อมูลได้อย่างเดียว ไม่สามารถแก้ไขได้</div>
+
+      <div class="balance-hero">
+        <div class="bal-label">💚 ยอดเงินคงเหลือปัจจุบัน</div>
+        <div class="bal-amount" id="balDisp">0.00</div>
+        <div class="bal-unit">บาท</div>
+        <div class="bal-bar-row"><span>สัดส่วนคงเหลือ</span><span id="balPct">0%</span></div>
+        <div class="bal-bar"><div class="bal-bar-fill" id="balBarFill" style="width:0%"></div></div>
+        <div class="bal-footer">
+          <span class="bal-meta">รายการทั้งหมด: <strong id="txnCnt">0</strong></span>
+          <span class="bal-meta">อัปเดต: <strong id="lastUpdate">-</strong></span>
+        </div>
+      </div>
+
+      <!-- GOAL -->
+      <div class="goal-card">
+        <div class="goal-hdr">
+          <span class="goal-hdr-title">🎯 เป้าหมายยอดเงิน</span>
+          <button class="goal-edit-btn" id="goalEditBtn" onclick="openGoalModal()">ตั้งเป้าหมาย</button>
+        </div>
+        <div class="goal-numbers">
+          <span class="goal-current" id="goalCurrent">0.00</span>
+          <span class="goal-target">/ <span id="goalTarget">ยังไม่ได้ตั้ง</span> บาท</span>
+        </div>
+        <div class="goal-bar"><div class="goal-fill" id="goalFill" style="width:0%"></div></div>
+        <div class="goal-pct">ความคืบหน้า <strong id="goalPct">0%</strong></div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-c in"><div class="lbl">📈 รับเข้าทั้งหมด</div><div class="val green" id="sTotalIn">0.00</div></div>
+        <div class="stat-c out"><div class="lbl">📉 จ่ายออกทั้งหมด</div><div class="val red" id="sTotalOut">0.00</div></div>
+        <div class="stat-c txn"><div class="lbl">🔢 จำนวนรายการ</div><div class="val blue" id="sTxn">0</div></div>
+        <div class="stat-c today"><div class="lbl">📅 รายการวันนี้</div><div class="val gold" id="sToday">0</div></div>
+      </div>
+
+      <!-- ADMIN ACTIONS -->
+      <div class="act-grid" id="adminActions">
+        <button class="btn-act btn-add-act" onclick="openTxnModal('add')">💚 เพิ่มรายรับ</button>
+        <button class="btn-act btn-ded-act" onclick="openTxnModal('ded')">❤️ หักรายจ่าย</button>
+      </div>
+      <button class="btn-sm" id="resetBtn" onclick="confirmReset()">⚠️ รีเซ็ตกองทุน</button>
+
+      <div class="branding">ขับเคลื่อนโดย <strong>FLIPCYBER</strong> — กองทุนเงินค่าสีเขียว 💚</div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="tab-content" id="tab-history">
+    <div class="inner">
+      <div class="search-bar">
+        <input class="search-input" type="text" id="searchQ" placeholder="🔍 ค้นหาชื่อ, ห้อง, เหตุผล..." oninput="renderHistory()">
+        <select class="filter-sel" id="filterType" onchange="renderHistory()">
+          <option value="all">ทุกประเภท</option>
+          <option value="เพิ่ม">รายรับ</option>
+          <option value="หัก">รายจ่าย</option>
+        </select>
+        <select class="filter-sel" id="filterDate" onchange="renderHistory()">
+          <option value="all">ทุกวัน</option>
+          <option value="today">วันนี้</option>
+          <option value="week">7 วันล่าสุด</option>
+        </select>
+      </div>
+      <div class="section-card">
+        <div class="section-hdr">
+          <span class="section-hdr-title">📋 ประวัติการทำรายการ</span>
+          <span class="badge-count" id="histBadge">0 รายการ</span>
+        </div>
+        <div class="history-wrap" id="historyList">
+          <div class="empty-msg"><div class="empty-msg-icon">📭</div>ยังไม่มีรายการ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="tab-content" id="tab-chart">
+    <div class="inner">
+      <div class="section-card" style="padding:20px">
+        <div class="section-hdr" style="margin:-20px -20px 16px;padding:14px 20px">
+          <span class="section-hdr-title">📊 รายรับ-รายจ่ายรายวัน (7 วัน)</span>
+        </div>
+        <div class="chart-legend">
+          <span><span class="dot" style="background:#00ff87"></span>รายรับ</span>
+          <span><span class="dot" style="background:#ff4d6d"></span>รายจ่าย</span>
+        </div>
+        <div style="position:relative;width:100%;height:260px">
+          <canvas id="chartDaily"></canvas>
+        </div>
+      </div>
+      <div class="section-card" style="padding:20px">
+        <div class="section-hdr" style="margin:-20px -20px 16px;padding:14px 20px">
+          <span class="section-hdr-title">🍩 สัดส่วนรับ vs จ่าย</span>
+        </div>
+        <div class="chart-legend">
+          <span><span class="dot" style="background:#00ff87"></span>รับเข้า</span>
+          <span><span class="dot" style="background:#ff4d6d"></span>จ่ายออก</span>
+        </div>
+        <div style="position:relative;width:100%;height:220px">
+          <canvas id="chartDonut"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPORT -->
+  <div class="tab-content" id="tab-export">
+    <div class="inner">
+      <div class="export-grid" style="margin-bottom:16px">
+        <div class="export-card" onclick="exportCSV()">
+          <div class="export-icon">📄</div>
+          <div class="export-title">Export CSV</div>
+          <div class="export-desc">ดาวน์โหลดประวัติทั้งหมดสำหรับ Excel</div>
+        </div>
+        <div class="export-card" onclick="exportJSON()">
+          <div class="export-icon">🗂️</div>
+          <div class="export-title">Export JSON</div>
+          <div class="export-desc">ข้อมูลทั้งหมดในรูปแบบ JSON</div>
+        </div>
+        <div class="export-card" onclick="exportTxt()">
+          <div class="export-icon">📝</div>
+          <div class="export-title">รายงาน TXT</div>
+          <div class="export-desc">สรุปยอดพร้อมพิมพ์</div>
+        </div>
+        <div class="export-card" onclick="copyReport()">
+          <div class="export-icon">📋</div>
+          <div class="export-title">คัดลอกรายงาน</div>
+          <div class="export-desc">สำหรับแปะในไลน์หรือ Discord</div>
+        </div>
+      </div>
+      <div class="section-card" style="padding:20px">
+        <div style="color:var(--g2);font-size:14px;font-weight:600;margin-bottom:14px">👁️ ตัวอย่างรายงาน</div>
+        <div id="reportPreview" style="font-family:monospace;font-size:12px;color:var(--text2);line-height:1.8;white-space:pre-wrap"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /appScreen -->
+
+<!-- MODAL: TXN -->
+<div class="ov" id="txnOv">
+  <div class="modal">
+    <button class="modal-close" onclick="closeTxnModal()">✕</button>
+    <div class="modal-title" id="txnTitle">เพิ่มรายรับ</div>
+    <div class="modal-sub" id="txnSub">กรอกข้อมูลให้ครบถ้วน</div>
+    <div class="f-grp">
+      <label>💰 จำนวนเงิน (บาท)</label>
+      <div class="f-amt-wrap"><span class="f-amt-pfx">฿</span><input type="number" id="fAmt" placeholder="0.00" min="0" step="0.01"></div>
+    </div>
+    <div class="f-row">
+      <div class="f-grp"><label>👤 ชื่อผู้ดำเนินการ</label><input type="text" id="fName" placeholder="ชื่อ-นามสกุล"></div>
+      <div class="f-grp"><label>🏫 ห้อง</label><input type="text" id="fRoom" placeholder="เช่น 6/5"></div>
+    </div>
+    <div class="f-grp"><label>📝 เหตุผล</label><textarea id="fReason" placeholder="อธิบายเหตุผล..."></textarea></div>
+    <div class="f-grp"><label>🖼️ ลิงก์สลิป (ถ้ามี)</label><input type="url" id="fSlip" placeholder="https://..."></div>
+    <button class="btn-submit add" id="txnSubmitBtn" onclick="submitTxn()">✅ บันทึกรายรับ</button>
+  </div>
+</div>
+
+<!-- MODAL: GOAL -->
+<div class="ov" id="goalOv">
+  <div class="modal">
+    <button class="modal-close" onclick="closeGoalModal()">✕</button>
+    <div class="modal-title" style="color:var(--gold)">🎯 ตั้งเป้าหมายยอดเงิน</div>
+    <div class="modal-sub">กำหนดยอดเงินที่ต้องการสะสม</div>
+    <div class="f-grp"><label>🎯 ยอดเป้าหมาย (บาท)</label><input type="number" id="fGoal" placeholder="เช่น 10000" min="0"></div>
+    <div class="f-grp"><label>📝 ชื่อเป้าหมาย (ถ้ามี)</label><input type="text" id="fGoalName" placeholder="เช่น ค่ากีฬาสี รอบ 2"></div>
+    <button class="btn-submit add" style="background:linear-gradient(135deg,#7a5500,#f5c842);color:#000" onclick="saveGoal()">🎯 บันทึกเป้าหมาย</button>
+  </div>
+</div>
+
+<!-- MODAL: RESET -->
+<div class="ov" id="resetOv">
+  <div class="modal">
+    <button class="modal-close" onclick="closeReset()">✕</button>
+    <div class="modal-title" style="color:var(--red)">⚠️ รีเซ็ตกองทุน</div>
+    <div class="modal-sub" style="color:var(--text2)">การดำเนินการนี้ <span style="color:var(--red)">ไม่สามารถย้อนกลับได้!</span></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+      <button class="btn-sm" onclick="doReset('balance')">🔄 รีเซ็ตยอดเงิน (เก็บประวัติ)</button>
+      <button class="btn-sm danger" onclick="doReset('all')">🗑️ รีเซ็ตทุกอย่าง (ลบประวัติด้วย)</button>
+      <button class="btn-sm" onclick="closeReset()">↩️ ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-area" id="toastArea"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ── STATE ──
+const SK = 'fc_v3';
+const USERS = {
+  admin:  { pass: '1234', role: 'admin' },
+  viewer: { pass: '1234', role: 'viewer' }
+};
+
+let session = null;
+let DB = loadDB();
+let currentMode = 'add';
+let charts = {};
+let selectedRole = 'admin';
+
+// ── STORAGE ──
+function loadDB() {
+  try {
+    const raw = (typeof localStorage !== 'undefined') ? localStorage.getItem(SK) : null;
+    const d = JSON.parse(raw || '{}');
+    return {
+      balance:   d.balance   || 0,
+      total_in:  d.total_in  || 0,
+      total_out: d.total_out || 0,
+      history:   d.history   || [],
+      goal:      d.goal      || null,
+      goalName:  d.goalName  || ''
+    };
+  } catch { return { balance:0, total_in:0, total_out:0, history:[], goal:null, goalName:'' }; }
+}
+function saveDB() {
+  try { if (typeof localStorage !== 'undefined') localStorage.setItem(SK, JSON.stringify(DB)); } catch {}
+}
+
+// ── UTILS ──
+function fmt(n) { return Number(n).toLocaleString('th-TH', { minimumFractionDigits:2, maximumFractionDigits:2 }); }
+
+function animCount(el, to, dur=1100) {
+  const from = parseFloat(el.dataset.v || '0');
+  el.dataset.v = to;
+  const s = performance.now();
+  const step = now => {
+    const p = Math.min((now - s) / dur, 1), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = fmt(from + (to - from) * e);
+    if (p < 1) requestAnimationFrame(step); else el.textContent = fmt(to);
+  };
+  requestAnimationFrame(step);
+}
+
+function addRipple(e) {
+  const btn = e.currentTarget;
+  const r = document.createElement('span'); r.className = 'ripple';
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+  btn.appendChild(r); setTimeout(() => r.remove(), 600);
+}
+
+// ── AUTH ──
+function setRole(r) {
+  selectedRole = r;
+  document.getElementById('tabAdmin').classList.toggle('active', r === 'admin');
+  document.getElementById('tabViewer').classList.toggle('active', r === 'viewer');
+}
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim().toLowerCase();
+  const p = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginErr');
+  const acc = USERS[u];
+  if (!acc || acc.pass !== p || acc.role !== selectedRole) {
+    errEl.textContent = '❌ username, password หรือ role ไม่ถูกต้อง'; return;
+  }
+  session = { username: u, role: acc.role };
+  errEl.textContent = '';
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('appScreen').classList.add('active');
+  document.getElementById('userLabel').textContent = u;
+  document.getElementById('rolePill').textContent = acc.role === 'admin' ? 'Admin' : 'Viewer';
+  const isAdmin = acc.role === 'admin';
+  document.getElementById('viewerBanner').style.display = isAdmin ? 'none' : 'flex';
+  document.getElementById('adminActions').style.display = isAdmin ? 'grid' : 'none';
+  document.getElementById('resetBtn').style.display = isAdmin ? 'block' : 'none';
+  document.getElementById('goalEditBtn').style.display = isAdmin ? 'block' : 'none';
+  // attach ripple to action buttons
+  document.querySelectorAll('.btn-act').forEach(b => b.addEventListener('click', addRipple));
+  renderAll();
+  setTimeout(renderCharts, 300);
+}
+
+function doLogout() {
+  session = null;
+  document.getElementById('appScreen').classList.remove('active');
+  document.getElementById('loginScreen').classList.add('active');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-dash').classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach((el, i) => el.classList.toggle('active', i === 0));
+}
+
+// ── TABS ──
+function showTab(t, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + t).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (t === 'chart')  setTimeout(renderCharts, 100);
+  if (t === 'export') renderReportPreview();
+  if (t === 'history') renderHistory();
+}
+
+// ── RENDER ──
+function renderAll() {
+  const { balance, total_in, total_out, history, goal } = DB;
+  animCount(document.getElementById('balDisp'), balance);
+  animCount(document.getElementById('sTotalIn'), total_in);
+  animCount(document.getElementById('sTotalOut'), total_out);
+  const pct = total_in > 0 ? Math.min(Math.round((balance / total_in) * 100), 100) : 0;
+  document.getElementById('balPct').textContent = pct + '%';
+  setTimeout(() => document.getElementById('balBarFill').style.width = pct + '%', 80);
+  document.getElementById('sTxn').textContent = history.length;
+  document.getElementById('txnCnt').textContent = history.length;
+  const today = new Date().toLocaleDateString('th-TH');
+  document.getElementById('sToday').textContent = history.filter(h => h.date === today).length;
+  document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' });
+  document.getElementById('goalCurrent').textContent = fmt(balance);
+  if (goal) {
+    document.getElementById('goalTarget').textContent = fmt(goal);
+    const gp = Math.min(Math.round((balance / goal) * 100), 100);
+    document.getElementById('goalPct').textContent = gp + '%';
+    setTimeout(() => document.getElementById('goalFill').style.width = gp + '%', 80);
+  } else {
+    document.getElementById('goalTarget').textContent = 'ยังไม่ได้ตั้ง';
+    document.getElementById('goalPct').textContent = '0%';
+    document.getElementById('goalFill').style.width = '0%';
+  }
+  renderHistory();
+}
+
+function renderHistory() {
+  const q   = (document.getElementById('searchQ')?.value || '').toLowerCase();
+  const ft  = document.getElementById('filterType')?.value  || 'all';
+  const fd  = document.getElementById('filterDate')?.value  || 'all';
+  const today  = new Date().toLocaleDateString('th-TH');
+  const weekAgo = new Date(Date.now() - 7 * 864e5);
+  const items = [...DB.history].reverse().filter(h => {
+    if (ft !== 'all' && h.type !== ft) return false;
+    if (fd === 'today' && h.date !== today) return false;
+    if (fd === 'week') { const d = new Date(h.dateISO || 0); if (d < weekAgo) return false; }
+    if (q && !((h.name||'').toLowerCase().includes(q) || (h.room||'').toLowerCase().includes(q) || (h.reason||'').toLowerCase().includes(q))) return false;
+    return true;
+  });
+  const list = document.getElementById('historyList');
+  const badge = document.getElementById('histBadge');
+  if (badge) badge.textContent = items.length + ' รายการ';
+  if (!items.length) {
+    list.innerHTML = '<div class="empty-msg"><div class="empty-msg-icon">📭</div>ไม่พบรายการ</div>'; return;
+  }
+  list.innerHTML = items.map((h, i) => {
+    const isIn = h.type === 'เพิ่ม', isRst = h.type === 'รีเซ็ต';
+    const dc = isRst ? 'rst' : isIn ? 'in' : 'out';
+    const ic = isRst ? '🔁' : isIn ? '🟢' : '🔴';
+    const sign = isIn ? '+' : '−'; const ac = isIn ? 'in' : 'out';
+    return `<div class="h-item" style="animation-delay:${i * 0.04}s">
+      <div class="h-dot ${dc}">${ic}</div>
+      <div class="h-info">
+        <div class="h-name">${h.name} <span style="color:var(--text3);font-size:11px">· ${h.room}</span></div>
+        <div class="h-meta">📝 ${h.reason}</div>
+      </div>
+      <div class="h-amt">
+        <div class="h-val ${ac}">${sign}${fmt(h.amount)}</div>
+        <div class="h-time">${h.time || ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCharts() {
+  const days=[]; const inMap={}; const outMap={};
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 864e5);
+    const k = d.toLocaleDateString('th-TH', { day:'2-digit', month:'2-digit' });
+    days.push(k); inMap[k] = 0; outMap[k] = 0;
+  }
+  DB.history.forEach(h => {
+    const k = h.date;
+    if (inMap.hasOwnProperty(k)) {
+      if (h.type === 'เพิ่ม') inMap[k] += h.amount;
+      else if (h.type === 'หัก') outMap[k] += h.amount;
+    }
+  });
+  const inData = days.map(d => inMap[d]);
+  const outData = days.map(d => outMap[d]);
+  if (charts.daily) charts.daily.destroy();
+  charts.daily = new Chart(document.getElementById('chartDaily').getContext('2d'), {
+    type: 'bar',
+    data: { labels: days, datasets: [
+      { label:'รายรับ',  data:inData,  backgroundColor:'rgba(0,255,135,0.65)', borderColor:'#00ff87', borderWidth:1 },
+      { label:'รายจ่าย', data:outData, backgroundColor:'rgba(255,77,109,0.5)',  borderColor:'#ff4d6d', borderWidth:1 }
+    ]},
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } },
+      scales: { x:{ ticks:{ color:'#5a9470', font:{ size:11 } }, grid:{ color:'rgba(0,255,135,0.05)' } },
+                y:{ ticks:{ color:'#5a9470', font:{ size:11 }, callback: v => v >= 1000 ? (v/1000).toFixed(1)+'k' : v }, grid:{ color:'rgba(0,255,135,0.07)' } } } }
+  });
+  if (charts.donut) charts.donut.destroy();
+  const ti = DB.total_in || 1, to = DB.total_out || 0;
+  charts.donut = new Chart(document.getElementById('chartDonut').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels:['รับเข้า','จ่ายออก'], datasets:[{ data:[ti,to], backgroundColor:['rgba(0,255,135,0.8)','rgba(255,77,109,0.7)'], borderColor:['#00ff87','#ff4d6d'], borderWidth:2, hoverOffset:8 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ display:false } } }
+  });
+}
+
+// ── TXN MODAL ──
+function openTxnModal(mode) {
+  currentMode = mode;
+  const isAdd = mode === 'add';
+  document.getElementById('txnTitle').textContent = isAdd ? '💚 เพิ่มรายรับ' : '❤️ หักรายจ่าย';
+  document.getElementById('txnTitle').style.color = isAdd ? 'var(--g1)' : 'var(--red)';
+  document.getElementById('txnSub').textContent = isAdd ? 'บันทึกเงินรับเข้ากองทุน' : 'บันทึกเงินจ่ายออกจากกองทุน';
+  const sb = document.getElementById('txnSubmitBtn');
+  sb.className = 'btn-submit ' + (isAdd ? 'add' : 'ded');
+  sb.textContent = isAdd ? '✅ บันทึกรายรับ' : '🔴 บันทึกรายจ่าย';
+  ['fAmt','fName','fRoom','fReason','fSlip'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('txnOv').classList.add('show');
+}
+function closeTxnModal() { document.getElementById('txnOv').classList.remove('show'); }
+
+function submitTxn() {
+  if (session?.role !== 'admin') { toast('🔒 เฉพาะ Admin เท่านั้น', 'err'); return; }
+  const amt    = parseFloat(document.getElementById('fAmt').value);
+  const name   = document.getElementById('fName').value.trim();
+  const room   = document.getElementById('fRoom').value.trim();
+  const reason = document.getElementById('fReason').value.trim();
+  const slip   = document.getElementById('fSlip').value.trim();
+  if (!amt || amt <= 0)  return toast('กรุณากรอกจำนวนเงิน', 'err');
+  if (!name)             return toast('กรุณากรอกชื่อ', 'err');
+  if (!room)             return toast('กรุณากรอกห้อง', 'err');
+  if (!reason)           return toast('กรุณากรอกเหตุผล', 'err');
+  const isAdd = currentMode === 'add';
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('th-TH');
+  const timeStr = now.toLocaleDateString('th-TH',{day:'2-digit',month:'2-digit',year:'2-digit'}) + ' ' + now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  if (isAdd) { DB.balance += amt; DB.total_in += amt; }
+  else       { DB.balance -= amt; DB.total_out += amt; }
+  DB.history.push({ type: isAdd ? 'เพิ่ม' : 'หัก', amount: amt, name, room, reason, slip_url: slip, time: timeStr, date: dateStr, dateISO: now.toISOString(), by: session.username });
+  saveDB(); renderAll(); closeTxnModal();
+  toast((isAdd ? '✅ บันทึกรายรับ ' : '🔴 หักรายจ่าย ') + fmt(amt) + ' บาท', 'ok');
+}
+
+// ── GOAL MODAL ──
+function openGoalModal() {
+  document.getElementById('fGoal').value = DB.goal || '';
+  document.getElementById('fGoalName').value = DB.goalName || '';
+  document.getElementById('goalOv').classList.add('show');
+}
+function closeGoalModal() { document.getElementById('goalOv').classList.remove('show'); }
+function saveGoal() {
+  const g = parseFloat(document.getElementById('fGoal').value);
+  if (!g || g <= 0) return toast('กรุณากรอกยอดเป้าหมาย', 'err');
+  DB.goal = g; DB.goalName = document.getElementById('fGoalName').value.trim();
+  saveDB(); renderAll(); closeGoalModal(); toast('🎯 บันทึกเป้าหมาย ' + fmt(g) + ' บาท', 'ok');
+}
+
+// ── RESET ──
+function confirmReset() { document.getElementById('resetOv').classList.add('show'); }
+function closeReset()   { document.getElementById('resetOv').classList.remove('show'); }
+function doReset(mode) {
+  if (session?.role !== 'admin') { toast('🔒 เฉพาะ Admin', 'err'); return; }
+  if (mode === 'all') {
+    DB = { balance:0, total_in:0, total_out:0, history:[], goal: DB.goal, goalName: DB.goalName };
+  } else {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('th-TH');
+    const timeStr = now.toLocaleDateString('th-TH',{day:'2-digit',month:'2-digit',year:'2-digit'}) + ' ' + now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+    DB.history.push({ type:'รีเซ็ต', amount: DB.balance, name: session.username, room:'-', reason:'รีเซ็ตยอด ' + fmt(DB.balance) + ' → 0', time: timeStr, date: dateStr, dateISO: now.toISOString(), by: session.username });
+    DB.balance = 0; DB.total_in = 0; DB.total_out = 0;
+  }
+  saveDB(); renderAll(); closeReset(); toast('🔁 รีเซ็ตสำเร็จ', 'ok');
+}
+
+// ── EXPORT ──
+function exportCSV() {
+  const rows = [['ประเภท','จำนวนเงิน','ชื่อ','ห้อง','เหตุผล','เวลา','บันทึกโดย']];
+  DB.history.forEach(h => rows.push([h.type, h.amount, h.name, h.room, h.reason, h.time||'', h.by||'']));
+  const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
+  dl('\ufeff' + csv, 'fund_data.csv', 'text/csv'); toast('📄 Export CSV สำเร็จ', 'ok');
+}
+function exportJSON() {
+  dl(JSON.stringify(DB, null, 2), 'fund_data.json', 'application/json'); toast('🗂️ Export JSON สำเร็จ', 'ok');
+}
+function exportTxt() {
+  dl(buildReport(), 'fund_report.txt', 'text/plain;charset=utf-8'); toast('📝 Export TXT สำเร็จ', 'ok');
+}
+function copyReport() {
+  navigator.clipboard?.writeText(buildReport()).then(() => toast('📋 คัดลอกแล้ว!', 'ok')).catch(() => toast('ไม่สามารถคัดลอกได้', 'err'));
+}
+function buildReport() {
+  const { balance, total_in, total_out, history, goal } = DB;
+  const now = new Date().toLocaleString('th-TH');
+  const pct = total_in > 0 ? Math.round((balance / total_in) * 100) : 0;
+  const bar = '█'.repeat(Math.round(pct / 10)) + '░'.repeat(10 - Math.round(pct / 10));
+  let r = `╔══════════════════════════════╗\n║  💚 กองทุนเงินค่าสีเขียว 💚  ║\n╚══════════════════════════════╝\n\n`;
+  r += `ยอดคงเหลือ   : ${fmt(balance)} บาท\nรับเข้าทั้งหมด : ${fmt(total_in)} บาท\nจ่ายออกทั้งหมด: ${fmt(total_out)} บาท\nจำนวนรายการ  : ${history.length} รายการ\n`;
+  if (goal) r += `เป้าหมาย     : ${fmt(goal)} บาท (${Math.min(Math.round((balance/goal)*100),100)}%)\n`;
+  r += `สัดส่วน      : ${bar} ${pct}%\n\nอัปเดต: ${now}\n─────────────────────────────\n\nประวัติล่าสุด 10 รายการ:\n`;
+  [...history].reverse().slice(0, 10).forEach((h, i) => {
+    const s = h.type === 'เพิ่ม' ? '+' : '−';
+    r += `${i+1}. ${h.type} ${s}${fmt(h.amount)} ฿\n   ${h.name} (${h.room}) — ${h.reason}\n   🕐 ${h.time||''}\n\n`;
+  });
+  r += `═══════════════════════════════\nFLIPCYBER Fund System v3.0`;
+  return r;
+}
+function renderReportPreview() { document.getElementById('reportPreview').textContent = buildReport(); }
+function dl(content, name, type) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = name; a.click(); URL.revokeObjectURL(a.href);
+}
+
+// ── TOAST ──
+function toast(msg, type = 'ok') {
+  const a = document.getElementById('toastArea');
+  const t = document.createElement('div'); t.className = 'toast';
+  t.innerHTML = (type === 'ok' ? '✅ ' : '❌ ') + msg;
+  a.appendChild(t);
+  setTimeout(() => { t.classList.add('fade'); setTimeout(() => t.remove(), 300); }, 2800);
+}
+
+// ── PARTICLES ──
+function createParticles() {
+  const wrap = document.getElementById('particles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div'); p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;background:rgba(0,255,${100+Math.floor(Math.random()*155)},${0.3+Math.random()*0.4});animation-duration:${8+Math.random()*15}s;animation-delay:${Math.random()*10}s`;
+    wrap.appendChild(p);
+  }
+}
+
+// ── OVERLAY CLOSE ──
+document.querySelectorAll('.ov').forEach(o => o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); }));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.ov.show').forEach(o => o.classList.remove('show')); });
+
+createParticles();
+</script>
+</body>
+</html>
